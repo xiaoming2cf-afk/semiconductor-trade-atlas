@@ -1,0 +1,17 @@
+/node_modules/
+/dist/
+/.runtime/
+/public/cesium/
+/.vite/
+/.cache/
+/cache/
+/coverage/
+*.log
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+secrets.env
+**/secrets.env
+.DS_Store
+Thumbs.db

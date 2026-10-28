@@ -1,0 +1,125 @@
+{
+  "snapshot": "2025-12-31",
+  "roster_observation_date": "2026-10-28",
+  "node_count": 339,
+  "directed_edge_count": 691,
+  "old_node_count": 146,
+  "old_edge_count": 330,
+  "added_node_count": 193,
+  "added_edge_count": 361,
+  "roster_total": 199,
+  "roster_accepted": 194,
+  "roster_unresolved": 5,
+  "roster_connected": 131,
+  "roster_isolated": 63,
+  "isolate_count": 88,
+  "weak_components": 90,
+  "evidence_record_count": 746,
+  "country_count": 13,
+  "country_edge_count": 45,
+  "cross_border_company_pairs": 362,
+  "domestic_company_pairs": 329,
+  "home_regions": [
+    "BM",
+    "CA",
+    "CN",
+    "GB",
+    "HK",
+    "IL",
+    "KR",
+    "KY",
+    "NL",
+    "SG",
+    "TW",
+    "US",
+    "VG"
+  ],
+  "home_region_counts": {
+    "US": 119,
+    "KY": 16,
+    "IL": 3,
+    "CN": 189,
+    "NL": 3,
+    "KR": 2,
+    "SG": 1,
+    "CA": 1,
+    "VG": 1,
+    "BM": 1,
+    "GB": 1,
+    "HK": 1,
+    "TW": 1
+  },
+  "profile_status_counts": {
+    "valid_at_snapshot": 335,
+    "first_profile_after_snapshot": 4
+  },
+  "company_history_coordinates_available": false,
+  "us_home_region_count": 119,
+  "checks": {
+    "old_146_nodes_preserved": true,
+    "old_330_edges_preserved": true,
+    "all_edges_have_raw_evidence": true,
+    "no_selfloops": true,
+    "gexf_readback_nodes": true,
+    "gexf_readback_edges": true,
+    "region_firm_sum": true,
+    "region_edge_sum": true,
+    "matrix_sum": true,
+    "binary_edge_weights": true
+  },
+  "alias_consolidation": {
+    "170296547": "208916622"
+  },
+  "unresolved": [
+    {
+      "wind_code": "688797.SH",
+      "company_name": "臻宝科技",
+      "reason": "No exact ticker/exchange profile; name searches do not identify an independently bridged entity."
+    },
+    {
+      "wind_code": "301717.SZ",
+      "company_name": "超纯应材",
+      "reason": "No exact ticker/exchange profile; official 2026 listing found but no independently bridged vendor entity."
+    },
+    {
+      "wind_code": "301583.SZ",
+      "company_name": "托伦斯",
+      "reason": "No exact ticker/exchange profile; official 2026 listing found but no independently bridged vendor entity."
+    },
+    {
+      "wind_code": "688825.SH",
+      "company_name": "长鑫科技",
+      "reason": "Several ChangXin group/subsidiary profiles found (143691599,293181986,204541510,206299806 etc.); no independent parent/security/address bridge to listed group."
+    },
+    {
+      "wind_code": "688801.SH",
+      "company_name": "燧原科技-U",
+      "reason": "195535092 Shanghai Enflame is a name candidate only, profile 2026-01-23 to 2026-04-14 with no ticker/ISIN/address; not an accepted 2025 identity."
+    }
+  ],
+  "definitions": {
+    "universe": "Old 2025 146-company sample union accepted entities from 2026-10-28 roster; no extra neighbors.",
+    "edge": "FactSet supplier -> customer, valid [start,end) at 2025-12-31, both endpoints in selected company sample, binary pair count.",
+    "classification": "2026 roster category attached retrospectively; no historical category validity dates imputed.",
+    "geography": "335 company profiles valid at 2025-12-31; 4 isolated new roster entities first appear in 2026 and have explicit profile_status and dates. Their 2026 home_region attributes remain dated; no edge uses these profiles.",
+    "alias": "Only two Muxi/MetaX IDs with same exact security ISIN/exchange code over time are collapsed. Vendor history alone does not establish legal restructuring.",
+    "isolated": "Accepted company identity with no observed 2025 relationship to another selected company, not absence of business relationships."
+  },
+  "us_physical_map": {
+    "definition": "company 2025 address country is US",
+    "company_count": 120,
+    "incident_edge_count": 382,
+    "domestic_company_pairs": 197,
+    "cross_border_company_pairs": 185,
+    "all_incident_address_countries_known": true
+  },
+  "address_alias_fallbacks": [
+    {
+      "canonical_revere_id": "208916622",
+      "address_profile_revere_id": "170296547",
+      "start": "2025-12-11",
+      "end": "2026-04-14",
+      "raw_row_id": 570462
+    }
+  ]
+}

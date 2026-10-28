@@ -1,0 +1,20 @@
+* text=auto
+*.js text eol=lf
+*.jsx text eol=lf
+*.mjs text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+package.json text eol=lf
+package-lock.json text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Preserve the exact bytes used by the registered data SHA256 values.
+public/data/** -text whitespace=cr-at-eol
+public/enterprise/** -text whitespace=cr-at-eol
+public/licenses/** -text whitespace=cr-at-eol
+*.png binary
+*.jpg binary
+*.gephi binary
