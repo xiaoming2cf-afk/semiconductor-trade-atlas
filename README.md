@@ -2,10 +2,15 @@
 
 全球贸易与企业供货网络研究应用，使用 React、Vite 和 CesiumJS。
 
-公开网址：[芯片产业链研究地图](https://xiaoming2cf-afk.github.io/semiconductor-trade-atlas/)。
+公开入口：
+
+- [全球贸易地图](https://xiaoming2cf-afk.github.io/semiconductor-trade-atlas/)
+- [企业动态网络](https://xiaoming2cf-afk.github.io/semiconductor-trade-atlas/#enterprise)
+
+普通网址默认打开全球贸易；`#enterprise`直接打开企业动态页。两个主页面切换时同步网址片段，可直接复制分享。
 
 - 贸易目录：60个独立HS6，11类，69个视图（60个单码与9个环节合计）。2017—2024年共552份数据文件。
-- 企业网络：2025年末339家企业、691条供方→客户关系，展示原生Gephi导出的图和工程。
+- 企业网络：行业年度演变、企业供方网络与2025增补截面。年度数据覆盖2003—2025年；2025增补截面保留339家企业、691条关系的原生Gephi图与工程。
 
 ## 克隆与运行
 
@@ -109,3 +114,19 @@ npm run preview
 | @vitejs/plugin-react | 6.1.2 |
 
 完整解析版本保存在`package-lock.json`。Cesium官方仓库为[CesiumGS/cesium](https://github.com/CesiumGS/cesium)，其Apache-2.0许可证和第三方清单保留于`public/licenses/`。
+
+## 企业网络时序
+
+企业页含行业年度演变、企业供方网络与2025增补截面三个视图。行业年度图沿用原历史年度成员口径，2025年为146家企业、330条关系；年度并集为369家企业、1698条关系。2025增补截面另保留339家企业与691条关系。
+
+时序画布按Gephi导出的固定坐标显示节点，年份变化只更新真实年度节点和供货边。新出现节点渐亮，连续出现节点保留，本期未见的上一期节点和边淡出。播放到所选时间范围末年即停止；系统减少动态效果偏好会关闭渐变过渡。
+
+企业供方视图按所选焦点读取全部直接供方、客户记录，默认显示上游供方，也可切换下游客户或双向。名称和归属取对应年度profile，出现年份来自当前网络和方向的实际观测。2003—2008年的行业来源覆盖为部分历史记录。
+
+支持缩放、平移、节点记录、名称或ID检索居中、浅深画布、PNG当前视图下载、当前年度完整节点和关系CSV。CSV的状态代码new、continuous分别对应相对上一可用年度的新出现和连续出现；本期未见集合单独计数。
+
+数据入口为public/enterprise/temporal/registry.json。行业bundle、固定positions、各焦点bundle按目录元数据延迟加载；focus_positions_file可复用共享Gephi坐标，单企业也可指定positions_file。profiles按year保存年度名称；frames用node_ids与edge_ids引用真实注册表。
+
+当前562个焦点分别使用各自23年有向关系并集的原生Gephi固定布局，同一焦点的所有年度沿用相同坐标。行业年度视图继续使用原369节点并集的固定坐标。
+
+主要源码：src/EnterpriseTimeline.jsx、src/TemporalCanvas.jsx、src/TemporalNodeDetails.jsx、src/temporalModel.js。模型与标签几何测试运行node --test tests/temporalModel.test.mjs tests/labelPlacement.test.mjs。

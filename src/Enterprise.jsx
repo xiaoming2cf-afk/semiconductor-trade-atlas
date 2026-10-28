@@ -1,7 +1,23 @@
 import {useEffect,useState} from 'react';
-import {assetUrl} from './assetUrl';
+import EnterpriseStatic from './EnterpriseStatic';
+import EnterpriseTimeline from './EnterpriseTimeline';
+import {readTemporalJSON} from './temporalLoader';
+import './enterpriseTemporal.css';
+const views=[['industry','行业年度演变'],['focus','企业供方网络'],['static','2025增补截面']];
 export default function Enterprise(){
-  const [scale,setScale]=useState(1),[meta,setMeta]=useState(null);
-  useEffect(()=>{fetch(assetUrl('enterprise/metadata.json')).then(r=>r.json()).then(setMeta)},[]);
-  return <section className="enterprise-page"><div className="enterprise-toolbar"><div><h1>企业供货网络</h1><p>{meta?.snapshot} · {meta?.node_count} 家企业 · {meta?.directed_edge_count} 条供货关系</p></div><div className="enterprise-actions"><button onClick={()=>setScale(v=>Math.max(.5,v-.25))} aria-label="缩小企业图">−</button><span>{Math.round(scale*100)}%</span><button onClick={()=>setScale(v=>Math.min(4,v+.25))} aria-label="放大企业图">＋</button><button onClick={()=>setScale(1)}>适应宽度</button><a href={assetUrl('enterprise/network.png')} download>下载 PNG</a><a href={assetUrl('enterprise/network.gephi')} download>下载 Gephi 工程</a></div></div><div className="enterprise-canvas"><img src={assetUrl('enterprise/network.png')} alt="2025年末339家企业及691条有向供货关系，使用Gephi原生布局导出的完整网络图" style={{width:`${scale*100}%`}} draggable="false"/></div><div className="enterprise-caption">供方 → 客户　·　FactSet 2025-12-31　·　Gephi 原生网络图</div></section>
+  const [mode,setMode]=useState('industry'),[focusId,setFocusId]=useState(''),[registry,setRegistry]=useState(null),[registryStatus,setRegistryStatus]=useState('loading'),[retry,setRetry]=useState(0);
+  useEffect(()=>{
+    let active=true;setRegistryStatus('loading');
+    readTemporalJSON('registry.json',false).then(data=>{
+      if(!active)return;setRegistry(data);setRegistryStatus('ready');
+      const companies=data.focus_companies||[];setFocusId(id=>companies.some(n=>String(n.id)===id)?id:String(data.default_focus_id||companies[0]?.id||''));
+    }).catch(error=>{if(active)setRegistryStatus(error.preparing?'preparing':'error');});
+    return()=>{active=false};
+  },[retry]);
+  const focusMode=id=>{setFocusId(String(id));setMode('focus');};
+  function tabKey(event,index){
+    let next=null;if(event.key==='ArrowRight')next=(index+1)%views.length;else if(event.key==='ArrowLeft')next=(index+views.length-1)%views.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=views.length-1;
+    if(next!=null){event.preventDefault();setMode(views[next][0]);event.currentTarget.parentElement.querySelectorAll('[role="tab"]')[next].focus();}
+  }
+  return <div className="enterprise-explorer"><div className="enterprise-view-tabs" role="tablist" aria-label="企业网络视图">{views.map(([value,label],index)=><button key={value} id={`enterprise-tab-${value}`} role="tab" aria-controls={`enterprise-panel-${value}`} tabIndex={mode===value?0:-1} aria-selected={mode===value} className={mode===value?'active':''} onClick={()=>setMode(value)} onKeyDown={event=>tabKey(event,index)}>{label}</button>)}</div>{mode==='static'?<EnterpriseStatic/>:<EnterpriseTimeline {...{mode,registry,registryStatus,focusId,setFocusId}} onRetryRegistry={()=>setRetry(n=>n+1)} onFocusMode={focusMode}/>}</div>;
 }

@@ -1,0 +1,12 @@
+import {appearanceYears,neighbours,stateAt,yearRanges} from './temporalModel';
+import {useMemo,useState,useEffect} from 'react';
+function NeighbourList({title,rows,onSelect}){
+  const [limit,setLimit]=useState(16);useEffect(()=>setLimit(16),[rows]);
+  return <section className="temporal-neighbours"><h3>{title}<span>{rows.length}</span></h3>{rows.length?<><div>{rows.slice(0,limit).map(n=><button key={n.id} onClick={()=>onSelect(n.id)} title={n.label}>{n.label||n.id}</button>)}</div>{rows.length>limit&&<button className="temporal-more" onClick={()=>setLimit(n=>n+30)}>再显示30家</button>}</>:<p className="temporal-muted">本期未见</p>}</section>;
+}
+export default function TemporalNodeDetails({model,view,selectedId,onSelect,focusId,direction,onFocusMode,focusIds,setYear}){
+  const node=selectedId?stateAt(model,selectedId,view.year):null;
+  const years=useMemo(()=>selectedId?appearanceYears(model,selectedId,focusId,direction):[],[model,selectedId,focusId,direction]);
+  const related=useMemo(()=>selectedId?neighbours(model,selectedId,view.year,view.edgeIds):{suppliers:[],customers:[]},[model,selectedId,view]);
+  return <aside className="temporal-inspector"><div className="temporal-inspector-title"><h2>企业记录</h2>{node&&<button aria-label="清除选中企业" onClick={()=>onSelect('')}>×</button>}</div>{!node?<div className="temporal-empty-selection"><span>↗</span><h3>{view.counts.nodes===0?'本期未见网络记录':'选择一家企业'}</h3><p>{view.counts.nodes===0?'可切换年度或焦点企业查看其他记录。':'点击节点或搜索名称，查看本年供方、客户与出现年份。'}</p></div>:<><section className="temporal-node-record"><span className="temporal-record-id">Revere ID {node.id}</span><h3>{node.label}</h3><dl><dt>当前年度</dt><dd>{view.year}</dd><dt>本年网络</dt><dd>{view.nodeIds.has(node.id)?view.addedNodes.has(node.id)?'新出现':'连续出现':'本期未见'}</dd><dt>名称记录年</dt><dd>{node.observed_year??'未载明'}</dd><dt>归属地区</dt><dd>{node.home_region||'未载明'}</dd><dt>首次观测</dt><dd>{years[0]??'本方向未见'}</dd><dt>最近观测</dt><dd>{years.at(-1)??'本方向未见'}</dd></dl><p className="temporal-year-history">在本网络出现：{yearRanges(years)||'本方向未见'}</p>{!view.nodeIds.has(node.id)&&years.length>0&&<button className="temporal-record-action" onClick={()=>setYear(years.filter(y=>y<=view.year).at(-1)??years[0])}>查看最近观测年度</button>}{focusIds.has(node.id)&&onFocusMode&&<button className="temporal-record-action" onClick={()=>onFocusMode(node.id)}>查看该企业供方网络</button>}</section><NeighbourList title="本图直接供方" rows={related.suppliers} onSelect={onSelect}/><NeighbourList title="本图直接客户" rows={related.customers} onSelect={onSelect}/></>}</aside>;
+}
