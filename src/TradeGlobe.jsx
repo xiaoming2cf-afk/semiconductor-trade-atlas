@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import * as C from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import {located,nameOf,money} from './data';
+import {assetUrl} from './assetUrl';
 
 const TEAL=C.Color.fromCssColorString('#148a96'),GOLD=C.Color.fromCssColorString('#e7a14d');
 function arc(a,b,isFlat){
@@ -37,8 +38,8 @@ export default function TradeGlobe({flows,economies,selected,onSelect,mode,regio
       v.scene.screenSpaceCameraController.minimumZoomDistance=8e4;
       v.scene.screenSpaceCameraController.maximumZoomDistance=4e7;
       v.camera.setView({destination:C.Cartesian3.fromDegrees(104,22,1.75e7)});
-      C.TileMapServiceImageryProvider.fromUrl('/cesium/Assets/Textures/NaturalEarthII',{maximumLevel:2}).then(p=>{if(disposed)return;const layer=v.imageryLayers.addImageryProvider(p);layer.saturation=.45;layer.brightness=1.35;v.scene.requestRender();}).catch(e=>setError(`底图加载失败：${e.message}`));
-      fetch('/data/world.geojson').then(r=>r.json()).then(json=>C.GeoJsonDataSource.load(json,{stroke:C.Color.fromCssColorString('#42656a').withAlpha(.5),fill:C.Color.TRANSPARENT,strokeWidth:.7})).then(ds=>{if(disposed)return;for(const e of ds.entities.values){if(e.polygon){e.polygon.fill=false;e.polygon.outline=true;e.polygon.outlineColor=C.Color.fromCssColorString('#6f8e91').withAlpha(.5);}}v.dataSources.add(ds);v.scene.requestRender();}).catch(()=>{});
+      C.TileMapServiceImageryProvider.fromUrl(assetUrl('cesium/Assets/Textures/NaturalEarthII'),{maximumLevel:2}).then(p=>{if(disposed)return;const layer=v.imageryLayers.addImageryProvider(p);layer.saturation=.45;layer.brightness=1.35;v.scene.requestRender();}).catch(e=>setError(`底图加载失败：${e.message}`));
+      fetch(assetUrl('data/world.geojson')).then(r=>r.json()).then(json=>C.GeoJsonDataSource.load(json,{stroke:C.Color.fromCssColorString('#42656a').withAlpha(.5),fill:C.Color.TRANSPARENT,strokeWidth:.7})).then(ds=>{if(disposed)return;for(const e of ds.entities.values){if(e.polygon){e.polygon.fill=false;e.polygon.outline=true;e.polygon.outlineColor=C.Color.fromCssColorString('#6f8e91').withAlpha(.5);}}v.dataSources.add(ds);v.scene.requestRender();}).catch(()=>{});
       handler=new C.ScreenSpaceEventHandler(v.scene.canvas);
       handler.setInputAction(click=>{const pick=v.scene.pick(click.position);if(pick?.id?.type)callback.current(pick.id);},C.ScreenSpaceEventType.LEFT_CLICK);
       handler.setInputAction(move=>{const pick=v.scene.pick(move.endPosition);v.canvas.style.cursor=pick?.id?.type?'pointer':'grab'},C.ScreenSpaceEventType.MOUSE_MOVE);

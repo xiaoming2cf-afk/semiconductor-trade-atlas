@@ -1,6 +1,8 @@
 # 芯片产业链研究地图
 
-全球贸易与企业供货网络的本地研究应用，使用 React、Vite 和 CesiumJS。
+全球贸易与企业供货网络研究应用，使用 React、Vite 和 CesiumJS。
+
+公开网址：[芯片产业链研究地图](https://xiaoming2cf-afk.github.io/semiconductor-trade-atlas/)。
 
 - 贸易目录：60个独立HS6，11类，69个视图（60个单码与9个环节合计）。2017—2024年共552份数据文件。
 - 企业网络：2025年末339家企业、691条供方→客户关系，展示原生Gephi导出的图和工程。
@@ -36,6 +38,16 @@ npm run build
 ```
 
 `npm run assets`可单独重建`public/cesium/`。构建命令也会准备这些资产，然后生成`dist/`。
+
+GitHub Pages 使用仓库子路径构建：
+
+```powershell
+$env:PAGES_BASE_PATH = '/semiconductor-trade-atlas/'
+npm run build
+Remove-Item Env:PAGES_BASE_PATH
+```
+
+未设置该变量时，基础路径为`/`，本地开发入口保持不变。数据、企业图、下载文件与Cesium运行资源统一使用构建基础路径。
 
 停止已有开发服务后，可预览生产构建：
 
@@ -82,6 +94,7 @@ npm run preview
 | `src/Inspector.jsx` | 经济体与贸易流详情、记录列表 |
 | `src/Enterprise.jsx` | 原生Gephi图缩放与下载 |
 | `src/data.js` | 金额显示、中文名与CSV导出 |
+| `src/assetUrl.js` | 本地和GitHub Pages的资源路径 |
 | `scripts/copy-cesium.mjs` | 从安装包生成本地Cesium资源 |
 
 商品选择由`index.products`和`index.datasets`驱动，产品ID为字符串。`group_id`和`group_name_zh`决定分类；`aggregation_level`区分合计与单码；`name_zh`、`title_zh`、`hs6_codes`、`scope_note`、`defaultThresholdUsd`和`quantity_defined`决定展示内容。

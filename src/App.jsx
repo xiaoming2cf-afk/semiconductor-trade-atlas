@@ -4,17 +4,18 @@ import Inspector from './Inspector';
 import Enterprise from './Enterprise';
 import {located,nameOf,money,exportCSV} from './data';
 import {catalogueFromIndex} from './products';
+import {assetUrl} from './assetUrl';
 const TradeGlobe=lazy(()=>import('./TradeGlobe'));
 export default function App(){
   const [tab,setTab]=useState('trade'),[year,setYear]=useState(2024),[product,setProduct]=useState('8542'),[data,setData]=useState(null),[loading,setLoading]=useState(true),[error,setError]=useState('');
   const [economy,setEconomy]=useState('all'),[direction,setDirection]=useState('all'),[minValue,setMinValue]=useState(1e10),[selected,setSelected]=useState(null),[mode,setMode]=useState('3d'),[region,setRegion]=useState('global');
   const [index,setIndex]=useState(null);
-  useEffect(()=>{fetch('/data/index.json').then(r=>r.json()).then(setIndex).catch(()=>{setError('商品目录读取失败');setLoading(false)});},[]);
+  useEffect(()=>{fetch(assetUrl('data/index.json')).then(r=>r.json()).then(setIndex).catch(()=>{setError('商品目录读取失败');setLoading(false)});},[]);
   const products=useMemo(()=>catalogueFromIndex(index),[index]);
   const productMeta=useMemo(()=>products.find(p=>p.code===product),[products,product]);
   const availableYears=useMemo(()=>index?.datasets?[...new Set(index.datasets.filter(d=>String(d.product)===product).map(d=>Number(d.year)))].sort((a,b)=>b-a):[2024],[index,product]);
   const dataset=useMemo(()=>index?.datasets.find(d=>String(d.product)===product&&Number(d.year)===year),[index,product,year]);
-  const dataFile=dataset?.file?`/data/${dataset.file}`:'';
+  const dataFile=dataset?.file?assetUrl(`data/${dataset.file}`):'';
   useEffect(()=>{if(!products.length)return;const p=products.find(p=>p.code===product)||products[0];setProduct(p.code);setMinValue(p.defaultThresholdUsd);},[products]);
   useEffect(()=>{
     if(!dataFile)return;
